@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">SkyCast</string>
+    <string name="weather_forecast">SkyCast Weather</string>
+    <string name="celsius_unit">°C</string>
+    <string name="fahrenheit_unit">°F</string>
+    <string name="search_city_hint">Search city or location…</string>
+    <string name="search_button">Search</string>
+    <string name="unit_toggle_label">Temperature Unit</string>
+    <string name="hourly_forecast_title">Today\'s Timeline</string>
+    <string name="five_day_forecast_title">5-Day Forecast</string>
+    <string name="humidity_label">Humidity</string>
+    <string name="wind_label">Wind Speed</string>
+    <string name="feels_like_label">Feels Like</string>
+    <string name="pressure_label">Pressure</string>
+    <string name="uv_index_label">UV Index</string>
+    <string name="visibility_label">Visibility</string>
+</resources>

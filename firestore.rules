@@ -1,0 +1,64 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function isValidUserProfile(data) {
+      return data.userId is string && data.userId == request.auth.uid &&
+             data.temperatureUnit in ['CELSIUS', 'FAHRENHEIT'] &&
+             data.themeMode in ['SYSTEM', 'LIGHT', 'DARK'] &&
+             data.preferGpsLocation is bool &&
+             data.createdAt is timestamp && data.createdAt <= request.time &&
+             data.updatedAt is timestamp && data.updatedAt <= request.time;
+    }
+
+    function isValidFavoriteCity(data) {
+      return data.userId is string && data.userId == request.auth.uid &&
+             data.name is string && data.name.size() > 0 && data.name.size() <= 100 &&
+             data.country is string && data.country.size() > 0 && data.country.size() <= 100 &&
+             data.latitude is number && data.latitude >= -90.0 && data.latitude <= 90.0 &&
+             data.longitude is number && data.longitude >= -180.0 && data.longitude <= 180.0 &&
+             data.addedAt is timestamp && data.addedAt <= request.time;
+    }
+
+    function isValidWeatherAlert(data) {
+      return data.userId is string && data.userId == request.auth.uid &&
+             data.cityName is string && data.cityName.size() > 0 && data.cityName.size() <= 100 &&
+             data.title is string && data.title.size() > 0 && data.title.size() <= 150 &&
+             data.thresholdTempC is number &&
+             data.createdAt is timestamp && data.createdAt <= request.time;
+    }
+
+    match /users/{userId} {
+      allow get, list: if isOwner(userId);
+      allow create: if isOwner(userId) && isValidUserProfile(incoming());
+      allow update: if isOwner(userId) && isValidUserProfile(incoming()) && incoming().createdAt == resource.data.createdAt;
+      allow delete: if isOwner(userId);
+
+      match /favorite_cities/{cityId} {
+        allow get, list: if isOwner(userId);
+        allow create: if isOwner(userId) && isValidFavoriteCity(incoming());
+        allow update: if isOwner(userId) && isValidFavoriteCity(incoming()) && incoming().addedAt == resource.data.addedAt;
+        allow delete: if isOwner(userId);
+      }
+
+      match /weather_alerts/{alertId} {
+        allow get, list: if isOwner(userId);
+        allow create: if isOwner(userId) && isValidWeatherAlert(incoming());
+        allow update: if isOwner(userId) && isValidWeatherAlert(incoming()) && incoming().createdAt == resource.data.createdAt;
+        allow delete: if isOwner(userId);
+      }
+    }
+  }
+}

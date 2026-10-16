@@ -1,0 +1,64 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "User profile settings and weather preferences",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "displayName": { "type": "string" },
+        "email": { "type": "string" },
+        "temperatureUnit": { "type": "string", "enum": ["CELSIUS", "FAHRENHEIT"] },
+        "themeMode": { "type": "string", "enum": ["SYSTEM", "LIGHT", "DARK"] },
+        "preferGpsLocation": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "temperatureUnit", "themeMode", "preferGpsLocation", "createdAt", "updatedAt"]
+    },
+    "FavoriteCity": {
+      "title": "FavoriteCity",
+      "description": "User bookmarked favorite cities synced to cloud",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "name": { "type": "string" },
+        "country": { "type": "string" },
+        "latitude": { "type": "number" },
+        "longitude": { "type": "number" },
+        "addedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "name", "country", "latitude", "longitude", "addedAt"]
+    },
+    "WeatherAlert": {
+      "title": "WeatherAlert",
+      "description": "Custom user weather alert trigger and note",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "cityName": { "type": "string" },
+        "title": { "type": "string" },
+        "notes": { "type": "string" },
+        "thresholdTempC": { "type": "number" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "userId", "cityName", "title", "thresholdTempC", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/UserProfile" },
+      "description": "Stores user weather preferences and profile"
+    },
+    "/users/{userId}/favorite_cities/{cityId}": {
+      "schema": { "$ref": "#/entities/FavoriteCity" },
+      "description": "User saved favorite cities"
+    },
+    "/users/{userId}/weather_alerts/{alertId}": {
+      "schema": { "$ref": "#/entities/WeatherAlert" },
+      "description": "User saved weather alerts and notes"
+    }
+  }
+}

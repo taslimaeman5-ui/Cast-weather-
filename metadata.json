@@ -1,0 +1,8 @@
+{
+  "name": "Remix SkyCast",
+  "description": "A modern Android weather application providing real-time forecasts, local conditions, and city search in a clean interface.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
